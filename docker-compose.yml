@@ -1,10 +1,18 @@
-version: '2'
+version: "2"
 services:
- samba:
-   image: vulhub/samba:4.6.3
-   tty: true
-   volumes:
-    - ./smb.conf:/usr/local/samba/etc/smb.conf
-   ports:
-    - "445:445"
-    - "6699:6699"
+  samba:
+    image: vulhub/samba:4.6.3
+    tty: true
+    volumes:
+      - ./smb.conf:/usr/local/samba/etc/smb.conf
+    ports:
+      - "445:445"
+    command: sh -c "useradd sambauser && (echo 'sambapass'; echo 'sambapass') | smbpasswd -a sambauser && mkdir -p /home/private && chown sambauser /home/private && echo 'Welcome to the private share. The server is running Samba 4.6.3, which may have known vulnerabilities.' > /home/private/readme.txt && chown sambauser /home/private/readme.txt && /start.sh"
+  web:
+    image: php:7.2-apache
+    volumes:
+      - ./web:/var/www/html
+    ports:
+      - "6699:80"
+    depends_on:
+      - samba
