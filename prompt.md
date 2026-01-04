@@ -9,7 +9,7 @@
 - 不用写部署脚本, 我不需要
 
 ## 转化为 vmdk 文件:
-- 包装好靶机后, 最终转化为 ova 文件, 见 convert_to_ova.sh
+- 包装好靶机后, 最终转化为 ova 文件 (最终目的), 见 convert_to_ova.sh
 
 ## 书写 markdown:
 - 我们是4人小组, 项目要分为8个模块, 每人负责两个模块, 把模块的负责和分发写入 distribution.md

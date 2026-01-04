@@ -1,4 +1,5 @@
 #!/bin/sh
+docker pull linkacloud/d2vm:latest
 alias d2vm='sudo docker run --rm -it --privileged -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/work -w /work linkacloud/d2vm:latest'
 
 # Get qcow2 file
