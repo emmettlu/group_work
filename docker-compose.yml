@@ -1,9 +1,66 @@
+version: "3"
+
 services:
+  # Web服务层 - 迷惑层1
+  web:
+    image: nginx:1.21-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/html:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - internal_net
+
+  # PHP应用层 - 迷惑层1
+  php:
+    image: php:7.4-fpm-alpine
+    volumes:
+      - ./web/html:/var/www/html
+      - ./web/php/docker-php-ext-mysqli.ini:/usr/local/etc/php/conf.d/docker-php-ext-mysqli.ini
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=fileuser
+      - MYSQL_PASSWORD=File@2024
+      - MYSQL_DATABASE=filemanager
+    networks:
+      - internal_net
+    command: sh -c "docker-php-ext-install mysqli pdo pdo_mysql && php-fpm"
+
+  # 数据库层 - 迷惑层2
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: filemanager
+      MYSQL_USER: fileuser
+      MYSQL_PASSWORD: File@2024
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - internal_net
+
+  # Samba服务 - 核心漏洞层 (CVE-2017-7494)
   samba:
     image: vulhub/samba:4.6.3
     tty: true
     volumes:
-      - ./smb.conf:/usr/local/samba/etc/smb.conf
+      - ./samba/smb.conf:/usr/local/samba/etc/smb.conf
+      - ./samba/share:/home/share
     ports:
       - "445:445"
-      - "6699:6699"
+      - "139:139"
+    networks:
+      - internal_net
+
+networks:
+  internal_net:
+    driver: bridge
+
+volumes:
+  mysql_data:
