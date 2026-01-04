@@ -1,9 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /backup/
-Disallow: /debug/
-Disallow: /.git/
-Disallow: /temp/
-Disallow: /api/internal/
-
-# Security through obscurity is not security :)
