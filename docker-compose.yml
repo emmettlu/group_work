@@ -19,7 +19,9 @@ services:
 
   # Web 服务器 - PHP + Apache，作为第一层迷惑
   web:
-    image: php:7.4-apache
+    build:
+      context: .
+      dockerfile: web/Dockerfile
     container_name: target_web
     restart: unless-stopped
     volumes:
