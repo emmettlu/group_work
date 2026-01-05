@@ -1,10 +1,9 @@
-version: "3"
-
 services:
   # MySQL 数据库 - 用于迷惑和存储提示信息
   mysql:
     image: mysql:5.7
     container_name: target_mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root123456
       MYSQL_DATABASE: company_db
@@ -22,6 +21,7 @@ services:
   web:
     image: php:7.4-apache
     container_name: target_web
+    restart: unless-stopped
     volumes:
       - ./web:/var/www/html
       - ./apache/ports.conf:/etc/apache2/ports.conf
@@ -41,6 +41,7 @@ services:
   samba:
     image: vulhub/samba:4.6.3
     container_name: target_samba
+    restart: unless-stopped
     tty: true
     volumes:
       - ./smb.conf:/usr/local/samba/etc/smb.conf
