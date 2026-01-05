@@ -15,7 +15,7 @@
 
 ### 软件要求
 - 操作系统: Linux (推荐 Ubuntu 20.04+, CentOS 7+)
-- Docker: 20.10+ 
+- Docker: 20.10+
 - Docker Compose: 1.29+
 - 网络: 能够访问 Docker Hub
 
@@ -47,7 +47,7 @@ sudo systemctl status docker
 cd /home/lym/Repos/group_work
 
 # 启动所有服务（后台运行）
-docker-compose up -d
+sudo docker-compose up -d
 
 # 查看容器状态
 docker-compose ps
@@ -331,16 +331,16 @@ docker exec -i target_mysql mysql -uroot -proot123456 < mysql/init.sql
 - 访问 `/admin/debug.php` 页面获取详细技术信息
 
 ### 常见问题
-Q: 找不到漏洞在哪？  
+Q: 找不到漏洞在哪？
 A: 访问 Web 界面的"系统信息"页面和 `/admin/debug.php`
 
-Q: 如何获取目标 IP？  
+Q: 如何获取目标 IP？
 A: 使用 `docker inspect target_samba | grep IPAddress`
 
-Q: Exploit 执行失败？  
+Q: Exploit 执行失败？
 A: 确保目标 IP 正确，445 端口可达，Samba 服务正常运行
 
-Q: 拿到 shell 后做什么？  
+Q: 拿到 shell 后做什么？
 A: 查看 `/home/share/flag.txt` 文件
 
 ## 附录：快速命令参考
