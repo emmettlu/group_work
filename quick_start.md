@@ -34,7 +34,7 @@
 docker --version
 
 # 检查 Docker Compose 版本
-docker-compose --version
+sudo docker compose --version
 
 # 确保 Docker 服务正在运行
 sudo systemctl status docker
@@ -47,10 +47,10 @@ sudo systemctl status docker
 cd /home/lym/Repos/group_work
 
 # 启动所有服务（后台运行）
-sudo docker-compose up -d
+sudo docker compose up -d
 
 # 查看容器状态
-docker-compose ps
+sudo docker compose ps
 ```
 
 **期望输出：**
@@ -68,13 +68,13 @@ target_web      docker-php-entrypoint apac...  Up      0.0.0.0:8080->8080/tcp
 
 ```bash
 # 查看容器日志（可选）
-docker-compose logs -f
+sudo docker compose logs -f
 
 # 测试 Web 服务
 curl http://localhost:8080
 
 # 测试 MySQL 连接
-docker exec -it target_mysql mysql -uwebuser -pwebpass123 -e "SHOW DATABASES;"
+sudo docker exec -it target_mysql mysql -uwebuser -pwebpass123 -e "SHOW DATABASES;"
 
 # 测试 SMB 服务
 smbclient -L //localhost -N
@@ -112,7 +112,7 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' tar
 mysql -h localhost -P 3306 -u webuser -pwebpass123 company_db
 
 # 从容器内连接
-docker exec -it target_mysql mysql -uwebuser -pwebpass123 company_db
+sudo docker exec -it target_mysql mysql -uwebuser -pwebpass123 company_db
 ```
 
 **测试账号：**
@@ -195,35 +195,35 @@ smb: \> get README.txt
 ### 查看日志
 ```bash
 # 查看所有容器日志
-docker-compose logs
+docker compose logs
 
 # 查看特定容器日志
-docker-compose logs target_samba
-docker-compose logs target_web
+docker compose logs target_samba
+docker compose logs target_web
 
 # 实时跟踪日志
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### 重启服务
 ```bash
 # 重启所有服务
-docker-compose restart
+docker compose restart
 
 # 重启特定服务
-docker-compose restart target_samba
+docker compose restart target_samba
 ```
 
 ### 停止和清理
 ```bash
 # 停止所有服务
-docker-compose stop
+docker compose stop
 
 # 停止并删除容器
-docker-compose down
+docker compose down
 
 # 删除所有资源（包括卷）
-docker-compose down -v
+docker compose down -v
 ```
 
 ### 进入容器
@@ -245,26 +245,26 @@ docker exec -it target_mysql /bin/bash
 # 检查端口占用
 sudo netstat -tulpn | grep -E '8080|3306|445'
 
-# 如果端口被占用，修改 docker-compose.yml 中的端口映射
+# 如果端口被占用，修改 docker compose.yml 中的端口映射
 # 或停止占用端口的服务
 ```
 
 ### 问题2：Web 界面无法访问
 ```bash
 # 检查 Web 容器状态
-docker-compose ps target_web
+docker compose ps target_web
 
 # 查看 Web 容器日志
-docker-compose logs target_web
+docker compose logs target_web
 
 # 重启 Web 服务
-docker-compose restart target_web
+docker compose restart target_web
 ```
 
 ### 问题3：无法连接 MySQL
 ```bash
 # 等待 MySQL 初始化完成（首次启动需要时间）
-docker-compose logs target_mysql | grep "ready for connections"
+docker compose logs target_mysql | grep "ready for connections"
 
 # 手动连接测试
 docker exec -it target_mysql mysql -uroot -proot123456
@@ -273,10 +273,10 @@ docker exec -it target_mysql mysql -uroot -proot123456
 ### 问题4：SMB 服务无响应
 ```bash
 # 检查 Samba 容器状态
-docker-compose ps target_samba
+docker compose ps target_samba
 
 # 查看 Samba 日志
-docker-compose logs target_samba
+docker compose logs target_samba
 
 # 测试端口连通性
 nc -zv localhost 445
@@ -286,8 +286,8 @@ nmap -p 445 localhost
 ### 问题5：数据库初始化失败
 ```bash
 # 删除数据卷并重新初始化
-docker-compose down -v
-docker-compose up -d
+docker compose down -v
+docker compose up -d
 
 # 手动执行初始化脚本
 docker exec -i target_mysql mysql -uroot -proot123456 < mysql/init.sql
@@ -347,7 +347,7 @@ A: 查看 `/home/share/flag.txt` 文件
 
 ```bash
 # 一键启动
-docker-compose up -d
+docker compose up -d
 
 # 获取目标 IP
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' target_samba
@@ -359,10 +359,10 @@ smbclient -L //TARGET_IP -N
 smbclient //TARGET_IP/myshare -N
 
 # 查看日志
-docker-compose logs -f
+docker compose logs -f
 
 # 停止环境
-docker-compose down
+docker compose down
 ```
 
 ---
