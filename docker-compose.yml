@@ -1,9 +1,61 @@
+version: "3"
+
 services:
+  # MySQL 数据库 - 用于迷惑和存储提示信息
+  mysql:
+    image: mysql:5.7
+    container_name: target_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: company_db
+      MYSQL_USER: webuser
+      MYSQL_PASSWORD: webpass123
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - target_network
+
+  # Web 服务器 - PHP + Apache，作为第一层迷惑
+  web:
+    image: php:7.4-apache
+    container_name: target_web
+    volumes:
+      - ./web:/var/www/html
+      - ./apache/ports.conf:/etc/apache2/ports.conf
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - target_network
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=webuser
+      - DB_PASS=webpass123
+      - DB_NAME=company_db
+
+  # Samba 服务 - 真正的漏洞点
   samba:
     image: vulhub/samba:4.6.3
+    container_name: target_samba
     tty: true
     volumes:
       - ./smb.conf:/usr/local/samba/etc/smb.conf
+      - ./share:/home/share
     ports:
       - "445:445"
+      - "139:139"
       - "6699:6699"
+    networks:
+      - target_network
+    hostname: fileserver
+
+volumes:
+  mysql_data:
+
+networks:
+  target_network:
+    driver: bridge
